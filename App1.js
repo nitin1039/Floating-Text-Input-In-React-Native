@@ -1,48 +1,30 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useCallback } from 'react';
 import {
   View,
   StatusBar,
   TextInput,
-  Animated,
+  Text,
 } from 'react-native';
 
 const FloatingLabelInput = ({ label, ...props }) => {
   const [isFocused, setIsFocused] = useState(false);
-  const animatedIsFocused = useRef(new Animated.Value(0)).current;
 
-  const handleFocus = () => setIsFocused(true);
-  const handleBlur = () => setIsFocused(false);
-
-  React.useEffect(() => {
-    Animated.timing(animatedIsFocused, {
-      toValue: isFocused ? 1 : 0,
-      duration: 200,
-    //   useNativeDriver: true,
-    }).start();
-  }, [isFocused]);
+  const handleFocus = () => {setIsFocused(true), []};
+  const handleBlur = () => {setIsFocused(false), []};
 
   const labelStyle = {
     position: 'absolute',
     left: 0,
-    top: animatedIsFocused.interpolate({
-      inputRange: [0, 1],
-      outputRange: [18, 0],
-    }),
-    fontSize: animatedIsFocused.interpolate({
-      inputRange: [0, 1],
-      outputRange: [20, 14],
-    }),
-    color: animatedIsFocused.interpolate({
-      inputRange: [0, 1],
-      outputRange: ['#aaa', '#000'],
-    }),
+    top: !isFocused ? 18 : 0,
+    fontSize: !isFocused ? 20 : 14,
+    color: !isFocused ? '#aaa' : '#000',
   };
 
   return (
     <View style={{ paddingTop: 18 }}>
-      <Animated.Text style={labelStyle}>
+      <Text style={labelStyle}>
         {label}
-      </Animated.Text>
+      </Text>
       <TextInput
         {...props}
         style={{ height: 26, fontSize: 20, color: '#000', borderBottomWidth: 1, borderBottomColor: '#555' }}
